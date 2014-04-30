@@ -1,0 +1,55 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+object_script.*
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Binary files
+*.exe
+GetSunSetRisePro!/
+GetSunSetRiseProd
+GetSunSetRisePro
+
+# Don't needed CodeBlocks files
+*.depend
+*.layout
+
+# Don't needed Dia files
+*.dia~
+
+# Don't needed dirs
+bin
+obj
+patches
+debug
+Debug
+release
+Release
+.*
+
+# Don't needed Qt files
+*.pro.user
+*.pro.user.*
+moc_*.cpp
+qrc_*.cpp
+Makefile*
+*-build-*
+object_script*
+
+# Don't needed Java files
+*.class
+.idea
+out
+
+# Needed files
+!.gitignore
