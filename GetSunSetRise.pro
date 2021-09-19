@@ -1,5 +1,7 @@
 TEMPLATE += app
-QT += script
+QT += widgets script
+CONFIG += C++17
+
 CONFIG(debug, debug|release) {
     unix:DESTDIR = ../debug/unix
     unix:OBJECTS_DIR = ../debug/unix/objects
@@ -23,12 +25,20 @@ unix:DESTDIR = ../release/unix
     win32:MOC_DIR = ../release/win32/moc
     win32:RCC_DIR = ../release/win32/moc
 }
+
 SOURCES += main.cpp \
     sunsetrise.cpp \
     GetSunSetRise.cpp \
-    bulsv_lib.cpp
+    functions.cpp
+
 HEADERS += sunsetrise.h \
     GetSunSetRise.h \
     debug.h \
-    bulsv_lib.h
+    functions.h
+
 FORMS += GetSunSetRise.ui
+
+DISTFILES +=
+
+RESOURCES += \
+    GetSunSetRise.qrc

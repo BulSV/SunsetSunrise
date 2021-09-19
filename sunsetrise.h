@@ -2,42 +2,17 @@
 #define SUNSETRISE_H
 
 #include "debug.h"
-#include <QApplication>
-
-const qreal ZENITH_OFFICIAL = 90.0+5.0/6.0;
-const qreal ZENITH_CIVIL = 96.0;
-const qreal ZENITH_NAUTICAL = 102.0;
-const qreal ZENITH_ASTRONOMICAL = 108.0;
+#include "functions.h"
 
 class SunSetRise
-{    
-    int itsDay;
-    int itsMonth;
-    int itsYear;
-    qreal itsLongitude; // долгота
-    qreal itsLatitude; // широта
-    qreal itsZenith;
-    int itsLocalOffset; // часовой пояс +2 для Киева
-    bool itsIsSet;
-    bool itsIsWest;
-
-    qreal minutesToDegrees(const qreal &minutes) const;
-    qreal degreesToRadians(const qreal &degrees) const;
-    qreal radiansToDegrees(const qreal &radians) const;
-    qreal toHumanTime(const qreal &time) const;
-
-    int whatDay() const;
-    qreal longtitudeToHour() const;
-    qreal sunsMeanAnomaly() const;
-    qreal sunsTrueLongtitude() const;
-    qreal sunsRightAscension() const;
-    qreal sunsDeclination() const;
-    qreal localMeanTime() const;
-    qreal toUTC() const;
-    qreal utToLocalTimeZone() const;
-
+{
 public:
-    enum ZENITH {OFFICIAL=0, CIVIL, NAUTICAL, ASTRONOMICAL};
+    enum class ZENITH {
+        OFFICIAL,
+        CIVIL,
+        NAUTICAL,
+        ASTRONOMICAL
+    };
     SunSetRise();
     SunSetRise(int day,
                int month,
@@ -58,6 +33,33 @@ public:
     void setSetOrRise(const bool &isSet);
     void setEastOrWest(const bool &isWest);
     qreal result();
+
+private:
+    qreal minutesToDegrees(const qreal &minutes) const;
+    qreal degreesToRadians(const qreal &degrees) const;
+    qreal radiansToDegrees(const qreal &radians) const;
+    qreal toHumanTime(const qreal &time) const;
+
+    int whatDay() const;
+    qreal longtitudeToHour() const;
+    qreal sunsMeanAnomaly() const;
+    qreal sunsTrueLongtitude() const;
+    qreal sunsRightAscension() const;
+    qreal sunsDeclination() const;
+    qreal localMeanTime() const;
+    qreal toUTC() const;
+    qreal utToLocalTimeZone() const;
+
+private:
+    int m_day;
+    int m_month;
+    int m_year;
+    qreal m_longitude; // долгота
+    qreal m_latitude; // широта
+    qreal m_zenith;
+    qreal m_localOffset; // часовой пояс +2 для Киева
+    bool m_isSet;
+    bool m_isWest;
 };
 
 #endif // SUNSETRISE_H
