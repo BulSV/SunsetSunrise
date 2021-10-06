@@ -72,7 +72,8 @@ void swapBytes(QByteArray &ba)
 QByteArray byteToWord(int value)
 {
     if(value > 0xFFFF) {
-        std::cerr << "Warning at byteToWord: value greater then size of word type, overflow will cut\n";
+        std::cerr << "Warning at byteToWord: value greater then size of word type,"
+                     " overflow will cut\n";
     }
     QByteArray ba;
     ba.resize(2);
