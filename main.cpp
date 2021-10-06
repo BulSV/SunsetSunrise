@@ -1,12 +1,12 @@
 #include <QApplication>
 
-#include "GetSunSetRise.h"
+#include "GetSunsetRise.h"
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    GetSunSetRise w;
+    GetSunsetRise w;
     w.show();
 
     return app.exec();

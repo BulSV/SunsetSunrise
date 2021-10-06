@@ -1,4 +1,4 @@
-#include "sunsetrise.h"
+#include "SunsetRise.h"
 
 #include <qmath.h>
 
@@ -16,7 +16,7 @@ constexpr double ZENITH_ASTRONOMICAL = 108.0;
 
 using namespace functions;
 
-SunSetRise::SunSetRise()
+SunsetRise::SunsetRise()
     : m_day(0)
     , m_month(0)
     , m_year(0)
@@ -29,22 +29,22 @@ SunSetRise::SunSetRise()
 {
 }
 
-void SunSetRise::setDay(int day)
+void SunsetRise::setDay(int day)
 {
     m_day = day;
 }
 
-void SunSetRise::setMonth(int month)
+void SunsetRise::setMonth(int month)
 {
     m_month = month;
 }
 
-void SunSetRise::setYear(int year)
+void SunsetRise::setYear(int year)
 {
     m_year = year;
 }
 
-void SunSetRise::setZenith(ZENITH zenith)
+void SunsetRise::setZenith(ZENITH zenith)
 {
     switch(zenith)
     {
@@ -63,47 +63,47 @@ void SunSetRise::setZenith(ZENITH zenith)
     }
 }
 
-void SunSetRise::setLoclOffset(double timeOffset)
+void SunsetRise::setLoclOffset(double timeOffset)
 {
     m_localOffset = timeOffset;
 }
 
-void SunSetRise::setLongtitude(double longtitude)
+void SunsetRise::setLongtitude(double longtitude)
 {
     m_longitude = longtitude;
 }
 
-void SunSetRise::setLatitude(double latitude)
+void SunsetRise::setLatitude(double latitude)
 {
     m_latitude = latitude;
 }
 
-void SunSetRise::setSetOrRise(bool isSet)
+void SunsetRise::setSetOrRise(bool isSet)
 {
     m_isSet = isSet;
 }
 
-void SunSetRise::setEastOrWest(bool isWest)
+void SunsetRise::setEastOrWest(bool isWest)
 {
     m_isWest = isWest;
 }
 
-double SunSetRise::minutesToDegrees(double minutes) const
+double SunsetRise::minutesToDegrees(double minutes) const
 {
     return ((100.0 * minutes) / 60.0);
 }
 
-double SunSetRise::degreesToRadians(double degrees) const
+double SunsetRise::degreesToRadians(double degrees) const
 {
     return ((degrees * 4.0 * qAtan(1.0)) / 180.0);
 }
 
-double SunSetRise::radiansToDegrees(double radians) const
+double SunsetRise::radiansToDegrees(double radians) const
 {
     return ((radians * 180.0) / (4.0 * qAtan(1.0)));
 }
 
-double SunSetRise::toHumanTime(double time) const
+double SunsetRise::toHumanTime(double time) const
 {
     int hours;
     double minutes;
@@ -115,7 +115,7 @@ double SunSetRise::toHumanTime(double time) const
 }
 
 //1. first calculate the day of the year
-int SunSetRise::whatDay() const
+int SunsetRise::whatDay() const
 {
     int N;
     int N1;
@@ -131,7 +131,7 @@ int SunSetRise::whatDay() const
 }
 
 //2. convert the longitude to hour value and calculate an approximate time
-double SunSetRise::longtitudeToHour() const
+double SunsetRise::longtitudeToHour() const
 {
     double lngHour;
     double t;
@@ -147,13 +147,13 @@ double SunSetRise::longtitudeToHour() const
 }
 
 //3. calculate the Sun's mean anomaly
-double SunSetRise::sunsMeanAnomaly() const
+double SunsetRise::sunsMeanAnomaly() const
 {
     return ((0.9856 * longtitudeToHour()) - 3.289);
 }
 
 //4. calculate the Sun's true longitude
-double SunSetRise::sunsTrueLongtitude() const
+double SunsetRise::sunsTrueLongtitude() const
 {
     double L;
 
@@ -166,7 +166,7 @@ double SunSetRise::sunsTrueLongtitude() const
 }
 
 //5a. calculate the Sun's right ascension
-double SunSetRise::sunsRightAscension() const
+double SunsetRise::sunsRightAscension() const
 {
     double RA;
     int Lquadrant;
@@ -187,7 +187,7 @@ double SunSetRise::sunsRightAscension() const
 }
 
 //6. calculate the Sun's declination
-double SunSetRise::sunsDeclination() const
+double SunsetRise::sunsDeclination() const
 {
     double sinDec;
     double cosDec;
@@ -218,7 +218,7 @@ double SunSetRise::sunsDeclination() const
 }
 
 //8. calculate local mean time of rising/setting
-double SunSetRise::localMeanTime() const
+double SunsetRise::localMeanTime() const
 {
     double T;
     T = sunsDeclination() + sunsRightAscension() - (0.06571 * longtitudeToHour()) - 6.622;
@@ -227,7 +227,7 @@ double SunSetRise::localMeanTime() const
 }
 
 //9. adjust back to UTC
-double SunSetRise::toUTC() const
+double SunsetRise::toUTC() const
 {
     double lngHour;
     double UT;
@@ -246,7 +246,7 @@ double SunSetRise::toUTC() const
 }
 
 //10. convert UT value to local time zone of latitude/longitude
-double SunSetRise::utToLocalTimeZone() const
+double SunsetRise::utToLocalTimeZone() const
 {
     double localT;
     localT = round(toUTC() + sextaToDeca(m_localOffset), 2);
@@ -254,7 +254,7 @@ double SunSetRise::utToLocalTimeZone() const
     return toHumanTime(localT);
 }
 
-double SunSetRise::getConfiguredTime()
+double SunsetRise::getConfiguredTime()
 {
     if(m_isWest) {
         m_longitude *= -1.0;

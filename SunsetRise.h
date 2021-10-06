@@ -3,7 +3,7 @@
 
 #include "functions.h"
 
-class SunSetRise
+class SunsetRise
 {
 public:
     enum class ZENITH {
@@ -12,7 +12,7 @@ public:
         NAUTICAL,
         ASTRONOMICAL
     };
-    SunSetRise();
+    SunsetRise();
     void setDay(int day);
     void setMonth(int month);
     void setYear(int year);

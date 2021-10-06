@@ -1,4 +1,4 @@
-GetSunSetRise
+GetSunsetRise
 =============
 
 Using QtScript

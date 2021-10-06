@@ -1,4 +1,4 @@
-#include "GetSunSetRise.h"
+#include "GetSunsetRise.h"
 
 #include <QAction>
 #include <QFile>
@@ -10,7 +10,7 @@
 
 #include "functions.h"
 
-GetSunSetRise::GetSunSetRise(QWidget *pwgt)
+GetSunsetRise::GetSunsetRise(QWidget *pwgt)
     : QWidget(pwgt)
 {
     setupUi(this);
@@ -34,18 +34,18 @@ GetSunSetRise::GetSunSetRise(QWidget *pwgt)
     m_menuCities = std::make_unique<QMenu>(this);
     addCities();
 
-    connect(bCalc, &QPushButton::clicked, this, &GetSunSetRise::calc);
-    connect(m_menuCities.get(), &QMenu::triggered, this , &GetSunSetRise::clickedCity);
+    connect(bCalc, &QPushButton::clicked, this, &GetSunsetRise::calc);
+    connect(m_menuCities.get(), &QMenu::triggered, this , &GetSunsetRise::clickedCity);
 }
 
-void GetSunSetRise::calc()
+void GetSunsetRise::calc()
 {
     m_sunSetRise->setDay(calendarWidget->selectedDate().day());
     m_sunSetRise->setMonth(calendarWidget->selectedDate().month());
     m_sunSetRise->setYear(calendarWidget->selectedDate().year());
     m_sunSetRise->setLongtitude(leLongtitude->text().toDouble());
     m_sunSetRise->setLatitude(leLatitude->text().toDouble());
-    m_sunSetRise->setZenith(static_cast<SunSetRise::ZENITH>(cbSunZenith->currentIndex()));
+    m_sunSetRise->setZenith(static_cast<SunsetRise::ZENITH>(cbSunZenith->currentIndex()));
     m_sunSetRise->setLoclOffset(zoneToTime(cbTimeZone->currentIndex()));
     m_sunSetRise->setSetOrRise(rbSunSet->isChecked());
     m_sunSetRise->setEastOrWest(rbWest->isChecked());
@@ -57,7 +57,7 @@ void GetSunSetRise::calc()
     }
 }
 
-void GetSunSetRise::clickedCity(QAction *pAction)
+void GetSunsetRise::clickedCity(QAction *pAction)
 {
     QFile file(QString("scripts/") + QString(pAction->property("cityName").toString()) + QString(".js"));
     if(!file.open(QIODevice::ReadOnly)) {
@@ -100,7 +100,7 @@ void GetSunSetRise::clickedCity(QAction *pAction)
 }
 
 
-qreal GetSunSetRise::zoneToTime(const int &index)
+qreal GetSunsetRise::zoneToTime(const int &index)
 {
     if(m_timeZones.size() < index + 1) {
         QMessageBox::critical(nullptr, "ERROR", "The time zone was selected an incorrect way!");
@@ -111,7 +111,7 @@ qreal GetSunSetRise::zoneToTime(const int &index)
     return m_timeZones.at(index);
 }
 
-QString GetSunSetRise::toHumanTime(double preResult)
+QString GetSunsetRise::toHumanTime(double preResult)
 {
     QString hours = QString::number(static_cast<int>(preResult));
     QString minutes = QString::number(functions::round(preResult - static_cast<double>(static_cast<int>(preResult)), 2));
@@ -159,7 +159,7 @@ QString GetSunSetRise::toHumanTime(double preResult)
     return QString(hours + ':' + minutes);
 }
 
-QDir GetSunSetRise::directoryOf(const QString &subdir)
+QDir GetSunsetRise::directoryOf(const QString &subdir)
 {
     QDir dir(QApplication::applicationDirPath());
     dir.cd(subdir);
@@ -167,7 +167,7 @@ QDir GetSunSetRise::directoryOf(const QString &subdir)
     return dir;
 }
 
-void GetSunSetRise::addCities()
+void GetSunsetRise::addCities()
 {
     QDir scriptsDir = directoryOf("scripts");
     QStringList fileNames = scriptsDir.entryList(QStringList("*.js"), QDir::Files);

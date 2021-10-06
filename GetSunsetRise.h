@@ -6,15 +6,15 @@
 #include <QMenu>
 #include <QWidget>
 
-#include "sunsetrise.h"
-#include "ui_GetSunSetRise.h"
+#include "SunsetRise.h"
+#include "ui_GetSunsetRise.h"
 
-class GetSunSetRise : public QWidget, public Ui::GetSunSetRise
+class GetSunsetRise : public QWidget, public Ui::GetSunSetRise
 {
     Q_OBJECT
 
 public:
-    explicit GetSunSetRise(QWidget *pwgt = nullptr);
+    explicit GetSunsetRise(QWidget *pwgt = nullptr);
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *pe)
@@ -31,7 +31,7 @@ private:
     void addCities();
 
 private:
-    std::unique_ptr<SunSetRise> m_sunSetRise = std::make_unique<SunSetRise>();
+    std::unique_ptr<SunsetRise> m_sunSetRise = std::make_unique<SunsetRise>();
     std::unique_ptr<QMenu> m_menuCities;
     QList<double> m_timeZones;
 };
