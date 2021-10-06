@@ -3,6 +3,7 @@
 #include <qmath.h>
 
 #include <QMessageBox>
+#include <QtMath>
 
 #include "functions.h"
 
@@ -93,16 +94,6 @@ double SunsetRise::minutesToDegrees(double minutes) const
     return ((100.0 * minutes) / 60.0);
 }
 
-double SunsetRise::degreesToRadians(double degrees) const
-{
-    return ((degrees * 4.0 * qAtan(1.0)) / 180.0);
-}
-
-double SunsetRise::radiansToDegrees(double radians) const
-{
-    return ((radians * 180.0) / (4.0 * qAtan(1.0)));
-}
-
 double SunsetRise::toHumanTime(double time) const
 {
     int hours;
@@ -157,7 +148,7 @@ double SunsetRise::sunsTrueLongtitude() const
 {
     double L;
 
-    L = sunsMeanAnomaly() + (1.916 * qSin(degreesToRadians(sunsMeanAnomaly()))) + (0.020 * qSin(degreesToRadians(2.0 * sunsMeanAnomaly()))) + 282.634;
+    L = sunsMeanAnomaly() + (1.916 * qSin(qDegreesToRadians(sunsMeanAnomaly()))) + (0.020 * qSin(qDegreesToRadians(2.0 * sunsMeanAnomaly()))) + 282.634;
 
     if(L > 360.0 || qFuzzyCompare(L, 360.0)) L -= 360.0;
     if(L < 0) L += 360.0;
@@ -172,8 +163,8 @@ double SunsetRise::sunsRightAscension() const
     int Lquadrant;
     int RAquadrant;
 
-    RA = qAtan(0.91764 * qTan(degreesToRadians(sunsTrueLongtitude())));
-    RA = radiansToDegrees(RA);
+    RA = qAtan(0.91764 * qTan(qDegreesToRadians(sunsTrueLongtitude())));
+    RA = qRadiansToDegrees(RA);
     Lquadrant = qFloor(sunsTrueLongtitude() / 90.0) * 90;
     RAquadrant = qFloor(RA / 90.0) * 90;
     RA = RA + (Lquadrant - RAquadrant);
@@ -194,10 +185,10 @@ double SunsetRise::sunsDeclination() const
     double cosH;
     double H;
 
-    sinDec = 0.39782 * qSin(degreesToRadians(sunsTrueLongtitude()));
+    sinDec = 0.39782 * qSin(qDegreesToRadians(sunsTrueLongtitude()));
     cosDec = qCos(qAsin(sinDec));
     //7a. calculate the Sun's local hour angle
-    cosH = (qCos(degreesToRadians(m_zenith)) - (sinDec * qSin(degreesToRadians(m_latitude)))) / (cosDec * qCos(degreesToRadians(m_latitude)));
+    cosH = (qCos(qDegreesToRadians(m_zenith)) - (sinDec * qSin(qDegreesToRadians(m_latitude)))) / (cosDec * qCos(qDegreesToRadians(m_latitude)));
     if (cosH >  1.0) {
         //the sun never rises on this location (on the specified date)
         QMessageBox::information(nullptr, "Information", "The sun never rises on this location\n(on the specified date)");
@@ -208,9 +199,9 @@ double SunsetRise::sunsDeclination() const
     }
     //7b. finish calculating H and convert into hours
     if(!m_isSet) {
-        H = 360.0 - radiansToDegrees(qAcos(cosH));
+        H = 360.0 - qRadiansToDegrees(qAcos(cosH));
     } else {
-        H = radiansToDegrees(qAcos(cosH));
+        H = qRadiansToDegrees(qAcos(cosH));
     }
     H /= 15.0;
 

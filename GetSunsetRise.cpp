@@ -8,8 +8,6 @@
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptValue>
 
-#include "functions.h"
-
 GetSunsetRise::GetSunsetRise(QWidget *pwgt)
     : QWidget(pwgt)
 {
@@ -119,7 +117,7 @@ qreal GetSunsetRise::zoneToTime(const int &index)
 QString GetSunsetRise::toHumanTime(double preResult)
 {
     QString hours = QString::number(static_cast<int>(preResult));
-    QString minutes = QString::number(functions::round(preResult - static_cast<double>(static_cast<int>(preResult)), 2));
+    QString minutes = QString::number(preResult - static_cast<double>(static_cast<int>(preResult)), 'f', 2);
 
     switch (hours.size()) {
     case 0:

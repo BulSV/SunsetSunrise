@@ -1,8 +1,6 @@
 #ifndef SUNSETRISE_H
 #define SUNSETRISE_H
 
-#include "functions.h"
-
 class SunsetRise
 {
 public:
@@ -26,8 +24,6 @@ public:
 
 private:
     double minutesToDegrees(double minutes) const;
-    double degreesToRadians(double degrees) const;
-    double radiansToDegrees(double radians) const;
     double toHumanTime(double time) const;
 
     int whatDay() const;
