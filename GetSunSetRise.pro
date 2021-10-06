@@ -38,7 +38,5 @@ HEADERS += sunsetrise.h \
 
 FORMS += GetSunSetRise.ui
 
-DISTFILES +=
-
 RESOURCES += \
     GetSunSetRise.qrc
