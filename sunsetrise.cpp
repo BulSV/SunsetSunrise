@@ -8,10 +8,10 @@
 
 namespace
 {
-constexpr qreal ZENITH_OFFICIAL = 90.0 + 5.0 / 6.0;
-constexpr qreal ZENITH_CIVIL = 96.0;
-constexpr qreal ZENITH_NAUTICAL = 102.0;
-constexpr qreal ZENITH_ASTRONOMICAL = 108.0;
+constexpr double ZENITH_OFFICIAL = 90.0 + 5.0 / 6.0;
+constexpr double ZENITH_CIVIL = 96.0;
+constexpr double ZENITH_NAUTICAL = 102.0;
+constexpr double ZENITH_ASTRONOMICAL = 108.0;
 } // namespace
 
 using namespace functions;
@@ -63,12 +63,12 @@ void SunSetRise::setZenith(const ZENITH &zenith)
     }
 }
 
-void SunSetRise::setLoclOffset(const qreal &timeOffset)
+void SunSetRise::setLoclOffset(const double &timeOffset)
 {
     m_localOffset = timeOffset;
 }
 
-void SunSetRise::setLongtitude(const qreal &longtitude)
+void SunSetRise::setLongtitude(const double &longtitude)
 {
     m_longitude = longtitude;
 #ifdef DEBUG
@@ -76,7 +76,7 @@ void SunSetRise::setLongtitude(const qreal &longtitude)
 #endif
 }
 
-void SunSetRise::setLatitude(const qreal &latitude)
+void SunSetRise::setLatitude(const double &latitude)
 {
     m_latitude = latitude;
 }
@@ -91,34 +91,33 @@ void SunSetRise::setEastOrWest(const bool &isWest)
     m_isWest = isWest;
 }
 
-qreal SunSetRise::minutesToDegrees(const qreal &minutes) const
+double SunSetRise::minutesToDegrees(const double &minutes) const
 {
     return ((100.0 * minutes) / 60.0);
 }
 
-qreal SunSetRise::degreesToRadians(const qreal &degrees) const
+double SunSetRise::degreesToRadians(const double &degrees) const
 {
     return ((degrees * 4.0 * qAtan(1.0)) / 180.0);
 }
 
-qreal SunSetRise::radiansToDegrees(const qreal &radians) const
+double SunSetRise::radiansToDegrees(const double &radians) const
 {
     return ((radians * 180.0) / (4.0 * qAtan(1.0)));
 }
 
-qreal SunSetRise::toHumanTime(const qreal &time) const
+double SunSetRise::toHumanTime(const double &time) const
 {
     int hours;
-    qreal minutes;
+    double minutes;
 
     hours = static_cast<int>(time);
     minutes = time - hours;
     minutes = (minutes * 60.0) / 100.0; // округлить до 0,01
-    return static_cast<qreal>(hours) + static_cast<qreal>(round(static_cast<float>(minutes), 2));
+    return static_cast<double>(hours) + static_cast<double>(round(static_cast<float>(minutes), 2));
 }
 
 //1. first calculate the day of the year
-
 int SunSetRise::whatDay() const
 {
     int N;
@@ -139,11 +138,10 @@ int SunSetRise::whatDay() const
 }
 
 //2. convert the longitude to hour value and calculate an approximate time
-
-qreal SunSetRise::longtitudeToHour() const
+double SunSetRise::longtitudeToHour() const
 {
-    qreal lngHour;
-    qreal t;
+    double lngHour;
+    double t;
 
     lngHour = m_longitude / 15.0;
     if(!m_isSet) {
@@ -160,7 +158,7 @@ qreal SunSetRise::longtitudeToHour() const
 }
 
 //3. calculate the Sun's mean anomaly
-qreal SunSetRise::sunsMeanAnomaly() const
+double SunSetRise::sunsMeanAnomaly() const
 {
 #ifdef DEBUG
     qDebug() << "SunSetRise::sunsMeanAnomaly() =" << (0.9856 * longtitudeToHour()) - 3.289;
@@ -170,9 +168,9 @@ qreal SunSetRise::sunsMeanAnomaly() const
 
 //4. calculate the Sun's true longitude
 
-qreal SunSetRise::sunsTrueLongtitude() const
+double SunSetRise::sunsTrueLongtitude() const
 {
-    qreal L;
+    double L;
 
     L = sunsMeanAnomaly() + (1.916 * qSin(degreesToRadians(sunsMeanAnomaly()))) + (0.020 * qSin(degreesToRadians(2.0 * sunsMeanAnomaly()))) + 282.634;
 
@@ -186,9 +184,9 @@ qreal SunSetRise::sunsTrueLongtitude() const
 }
 
 //5a. calculate the Sun's right ascension
-qreal SunSetRise::sunsRightAscension() const
+double SunSetRise::sunsRightAscension() const
 {
-    qreal RA;
+    double RA;
     int Lquadrant;
     int RAquadrant;
 
@@ -212,12 +210,12 @@ qreal SunSetRise::sunsRightAscension() const
 }
 
 //6. calculate the Sun's declination
-qreal SunSetRise::sunsDeclination() const
+double SunSetRise::sunsDeclination() const
 {
-    qreal sinDec;
-    qreal cosDec;
-    qreal cosH;
-    qreal H;
+    double sinDec;
+    double cosDec;
+    double cosH;
+    double H;
 
     sinDec = 0.39782 * qSin(degreesToRadians(sunsTrueLongtitude()));
     cosDec = qCos(qAsin(sinDec));
@@ -251,9 +249,9 @@ qreal SunSetRise::sunsDeclination() const
 }
 
 //8. calculate local mean time of rising/setting
-qreal SunSetRise::localMeanTime() const
+double SunSetRise::localMeanTime() const
 {
-    qreal T;
+    double T;
     T = sunsDeclination() + sunsRightAscension() - (0.06571 * longtitudeToHour()) - 6.622;
 #ifdef DEBUG
     qDebug() << "SunSetRise::localMeanTime(): T =" << T;
@@ -263,10 +261,10 @@ qreal SunSetRise::localMeanTime() const
 }
 
 //9. adjust back to UTC
-qreal SunSetRise::toUTC() const
+double SunSetRise::toUTC() const
 {
-    qreal lngHour;
-    qreal UT;
+    double lngHour;
+    double UT;
 
     lngHour = m_longitude / 15.0;
     UT = localMeanTime() - lngHour;
@@ -291,9 +289,9 @@ qreal SunSetRise::toUTC() const
 }
 
 //10. convert UT value to local time zone of latitude/longitude
-qreal SunSetRise::utToLocalTimeZone() const
+double SunSetRise::utToLocalTimeZone() const
 {
-    qreal localT;
+    double localT;
     localT = round(toUTC() + sextaToDeca(m_localOffset), 2);
 #ifdef DEBUG
     qDebug() << "SunSetRise::utToLocalTimeZone(): itsLocalOffset =" << itsLocalOffset;
@@ -315,7 +313,7 @@ qreal SunSetRise::utToLocalTimeZone() const
     return toHumanTime(localT);
 }
 
-qreal SunSetRise::result()
+double SunSetRise::result()
 {
     if(m_isWest) {
         m_longitude *= -1.0;

@@ -17,38 +17,38 @@ public:
     void setDay(const int &day);
     void setMonth(const int &month);
     void setYear(const int &year);
-    void setLongtitude(const qreal &longtitude);
-    void setLatitude(const qreal &latitude);
+    void setLongtitude(const double &longtitude);
+    void setLatitude(const double &latitude);
     void setZenith(const ZENITH &zenith);
-    void setLoclOffset(const qreal &timeOffset);
+    void setLoclOffset(const double &timeOffset);
     void setSetOrRise(const bool &isSet);
     void setEastOrWest(const bool &isWest);
-    qreal result();
+    double result();
 
 private:
-    qreal minutesToDegrees(const qreal &minutes) const;
-    qreal degreesToRadians(const qreal &degrees) const;
-    qreal radiansToDegrees(const qreal &radians) const;
-    qreal toHumanTime(const qreal &time) const;
+    double minutesToDegrees(const double &minutes) const;
+    double degreesToRadians(const double &degrees) const;
+    double radiansToDegrees(const double &radians) const;
+    double toHumanTime(const double &time) const;
 
     int whatDay() const;
-    qreal longtitudeToHour() const;
-    qreal sunsMeanAnomaly() const;
-    qreal sunsTrueLongtitude() const;
-    qreal sunsRightAscension() const;
-    qreal sunsDeclination() const;
-    qreal localMeanTime() const;
-    qreal toUTC() const;
-    qreal utToLocalTimeZone() const;
+    double longtitudeToHour() const;
+    double sunsMeanAnomaly() const;
+    double sunsTrueLongtitude() const;
+    double sunsRightAscension() const;
+    double sunsDeclination() const;
+    double localMeanTime() const;
+    double toUTC() const;
+    double utToLocalTimeZone() const;
 
 private:
     int m_day;
     int m_month;
     int m_year;
-    qreal m_longitude; // долгота
-    qreal m_latitude; // широта
-    qreal m_zenith;
-    qreal m_localOffset; // часовой пояс +2 для Киева
+    double m_longitude;
+    double m_latitude;
+    double m_zenith;
+    double m_localOffset;
     bool m_isSet;
     bool m_isWest;
 };
