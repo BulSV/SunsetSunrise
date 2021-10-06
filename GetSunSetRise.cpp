@@ -51,9 +51,9 @@ void GetSunSetRise::calc()
     m_sunSetRise->setEastOrWest(rbWest->isChecked());
 
     if(rbSunSet->isChecked()) {
-        lResults->setText(QString::fromUtf8("Закат в ") + toHumanTime(static_cast<double>(m_sunSetRise->result())));
+        lResults->setText(QString::fromUtf8("Закат в ") + toHumanTime(static_cast<double>(m_sunSetRise->getConfiguredTime())));
     } else {
-        lResults->setText(QString::fromUtf8("Восход в ") + toHumanTime(static_cast<double>(m_sunSetRise->result())));
+        lResults->setText(QString::fromUtf8("Восход в ") + toHumanTime(static_cast<double>(m_sunSetRise->getConfiguredTime())));
     }
 }
 

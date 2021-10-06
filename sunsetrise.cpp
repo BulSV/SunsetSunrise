@@ -110,7 +110,7 @@ double SunSetRise::toHumanTime(const double &time) const
 
     hours = static_cast<int>(time);
     minutes = time - hours;
-    minutes = (minutes * 60.0) / 100.0; // округлить до 0,01
+    minutes = (minutes * 60.0) / 100.0; // round to 0.01
     return static_cast<double>(hours) + static_cast<double>(round(static_cast<float>(minutes), 2));
 }
 
@@ -254,7 +254,7 @@ double SunSetRise::utToLocalTimeZone() const
     return toHumanTime(localT);
 }
 
-double SunSetRise::result()
+double SunSetRise::getConfiguredTime()
 {
     if(m_isWest) {
         m_longitude *= -1.0;

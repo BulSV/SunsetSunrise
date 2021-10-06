@@ -22,7 +22,7 @@ public:
     void setLoclOffset(const double &timeOffset);
     void setSetOrRise(const bool &isSet);
     void setEastOrWest(const bool &isWest);
-    double result();
+    double getConfiguredTime();
 
 private:
     double minutesToDegrees(const double &minutes) const;
