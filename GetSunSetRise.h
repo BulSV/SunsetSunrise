@@ -6,7 +6,6 @@
 #include <QMenu>
 #include <QWidget>
 
-#include "debug.h"
 #include "sunsetrise.h"
 #include "ui_GetSunSetRise.h"
 

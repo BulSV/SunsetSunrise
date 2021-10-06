@@ -71,9 +71,6 @@ void SunSetRise::setLoclOffset(const double &timeOffset)
 void SunSetRise::setLongtitude(const double &longtitude)
 {
     m_longitude = longtitude;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::setLongtitude: itsLongitude =" << itsLongitude;
-#endif
 }
 
 void SunSetRise::setLatitude(const double &latitude)
@@ -130,10 +127,6 @@ int SunSetRise::whatDay() const
     N3 = (1 + qFloor((m_year - 4.0 * qFloor(m_year / 4.0) + 2.0) / 3.0));
     N = N1 - (N2 * N3) + m_day - 30;
 
-#ifdef DEBUG
-    qDebug() << "N =" << N;
-#endif
-
     return N;
 }
 
@@ -149,10 +142,6 @@ double SunSetRise::longtitudeToHour() const
     } else {
         t = whatDay() + ((18.0 - lngHour) / 24.0);
     }
-#ifdef DEBUG
-    qDebug() << "itsLongitude =" << itsLongitude;
-    qDebug() << "t =" << t;
-#endif
 
     return t;
 }
@@ -160,14 +149,10 @@ double SunSetRise::longtitudeToHour() const
 //3. calculate the Sun's mean anomaly
 double SunSetRise::sunsMeanAnomaly() const
 {
-#ifdef DEBUG
-    qDebug() << "SunSetRise::sunsMeanAnomaly() =" << (0.9856 * longtitudeToHour()) - 3.289;
-#endif
     return ((0.9856 * longtitudeToHour()) - 3.289);
 }
 
 //4. calculate the Sun's true longitude
-
 double SunSetRise::sunsTrueLongtitude() const
 {
     double L;
@@ -176,9 +161,6 @@ double SunSetRise::sunsTrueLongtitude() const
 
     if(L > 360.0 || qFuzzyCompare(L, 360.0)) L -= 360.0;
     if(L < 0) L += 360.0;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::sunsTrueLongtitude() =" << L;
-#endif
 
     return L;
 }
@@ -200,11 +182,6 @@ double SunSetRise::sunsRightAscension() const
     if(RA < 0) RA += 360.0;
 
     RA /= 15.0;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::Lquadrant =" << Lquadrant;
-    qDebug() << "SunSetRise::RAquadrant =" << RAquadrant;
-    qDebug() << "SunSetRise::sunsRightAscension() =" << RA;
-#endif
 
     return RA;
 }
@@ -219,13 +196,8 @@ double SunSetRise::sunsDeclination() const
 
     sinDec = 0.39782 * qSin(degreesToRadians(sunsTrueLongtitude()));
     cosDec = qCos(qAsin(sinDec));
-//7a. calculate the Sun's local hour angle
+    //7a. calculate the Sun's local hour angle
     cosH = (qCos(degreesToRadians(m_zenith)) - (sinDec * qSin(degreesToRadians(m_latitude)))) / (cosDec * qCos(degreesToRadians(m_latitude)));
-#ifdef DEBUG
-    qDebug() << "SunSetRise::sunsDeclination(): sinDec =" << sinDec;
-    qDebug() << "SunSetRise::sunsDeclination(): cosDec =" << cosDec;
-    qDebug() << "SunSetRise::sunsDeclination(): cosH =" << cosH;
-#endif
     if (cosH >  1.0) {
         //the sun never rises on this location (on the specified date)
         QMessageBox::information(nullptr, "Information", "The sun never rises on this location\n(on the specified date)");
@@ -234,16 +206,13 @@ double SunSetRise::sunsDeclination() const
         //the sun never sets on this location (on the specified date)
         QMessageBox::information(nullptr, "Information", "The sun never sets on this location\n(on the specified date)");
     }
-//7b. finish calculating H and convert into hours
+    //7b. finish calculating H and convert into hours
     if(!m_isSet) {
         H = 360.0 - radiansToDegrees(qAcos(cosH));
     } else {
         H = radiansToDegrees(qAcos(cosH));
     }
     H /= 15.0;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::sunsDeclination(): H =" << H;
-#endif
 
     return H;
 }
@@ -253,9 +222,6 @@ double SunSetRise::localMeanTime() const
 {
     double T;
     T = sunsDeclination() + sunsRightAscension() - (0.06571 * longtitudeToHour()) - 6.622;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::localMeanTime(): T =" << T;
-#endif
 
     return T;
 }
@@ -271,19 +237,10 @@ double SunSetRise::toUTC() const
 
     if(UT > 24.0 || qFuzzyCompare(UT, 24.0)) {
         UT -= 24.0;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::toUTC(): UT >= 24";
-#endif
     }
     if(UT < 0) {
         UT += 24.0;
-#ifdef DEBUG
-    qDebug() << "SunSetRise::toUTC(): UT < 0";
-#endif
     }
-#ifdef DEBUG
-    qDebug() << "SunSetRise::toUTC(): UT =" << UT;
-#endif
 
     return UT;
 }
@@ -293,22 +250,6 @@ double SunSetRise::utToLocalTimeZone() const
 {
     double localT;
     localT = round(toUTC() + sextaToDeca(m_localOffset), 2);
-#ifdef DEBUG
-    qDebug() << "SunSetRise::utToLocalTimeZone(): itsLocalOffset =" << itsLocalOffset;
-    qDebug() << "SunSetRise::utToLocalTimeZone(): localT =" << localT;
-    qDebug() << "SunSetRise::utToLocalTimeZone(): toHumanTime(localT) =" << toHumanTime(localT);
-#endif
-#ifdef DEBUG
-    qDebug() << "SunSetRise::itsDay =" << itsDay;
-    qDebug() << "SunSetRise::itsMonth =" << itsMonth;
-    qDebug() << "SunSetRise::itsYear =" << itsYear;
-    qDebug() << "SunSetRise::itsLongitude =" << itsLongitude;
-    qDebug() << "SunSetRise::itsLatitude =" << itsLatitude;
-    qDebug() << "SunSetRise::itsZenith =" << itsZenith;
-    qDebug() << "SunSetRise::itsLocalOffset =" << itsLocalOffset;
-    qDebug() << "SunSetRise::itsIsSet =" << itsIsSet;
-    qDebug() << "SunSetRise::itsIsWest =" << itsIsWest;
-#endif
 
     return toHumanTime(localT);
 }

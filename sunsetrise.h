@@ -1,7 +1,6 @@
 #ifndef SUNSETRISE_H
 #define SUNSETRISE_H
 
-#include "debug.h"
 #include "functions.h"
 
 class SunSetRise

@@ -12,9 +12,7 @@ CONFIG(debug, debug|release) {
     win32:OBJECTS_DIR = ../debug/win32/objects
     win32:MOC_DIR = ../debug/win32/moc
     win32:RCC_DIR = ../debug/win32/moc
-    DEFINES = DEBUG
-}
-else {
+} else {
 unix:DESTDIR = ../release/unix
     unix:OBJECTS_DIR = ../release/unix/objects
     unix:MOC_DIR = ../release/unix/moc
@@ -33,7 +31,6 @@ SOURCES += main.cpp \
 
 HEADERS += sunsetrise.h \
     GetSunSetRise.h \
-    debug.h \
     functions.h
 
 FORMS += GetSunSetRise.ui

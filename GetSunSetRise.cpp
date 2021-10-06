@@ -20,19 +20,10 @@ GetSunSetRise::GetSunSetRise(QWidget *pwgt)
     }
     QTextStream in(&file);
     while(!in.atEnd()) {
-#ifdef DEBUG
-        QString str = in.readLine();
-        timeZones << str.toFloat();
-        qDebug() << "str =" << str;
-#endif
-#ifndef DEBUG
         m_timeZones << in.readLine().toDouble();
-#endif
     }
     file.close();
-#ifdef DEBUG
-    qDebug() << "timeZones =" << timeZones;
-#endif
+
     QDir dir;
     if(!QDir("scripts").exists()) {
         if(!dir.mkdir("scripts")) {
@@ -136,9 +127,6 @@ QString GetSunSetRise::toHumanTime(double preResult)
     default:
         break;
     }
-#ifdef DEBUG
-    qDebug() << "minuts.size() =" << minuts.size();
-#endif
     // maximum size of minutes if 5: "-0.xx". It is always less than one in absolute value
     switch (minutes.size()) {
     case 0: // ""
@@ -167,9 +155,6 @@ QString GetSunSetRise::toHumanTime(double preResult)
         minutes.remove(0, 2);
         break;
     }
-#ifdef DEBUG
-    qDebug() << "minuts.size() =" << minuts.size();
-#endif
 
     return QString(hours + ':' + minutes);
 }
@@ -178,9 +163,6 @@ QDir GetSunSetRise::directoryOf(const QString &subdir)
 {
     QDir dir(QApplication::applicationDirPath());
     dir.cd(subdir);
-#ifdef DEBUG
-    qDebug() << "QApplication::applicationDirPath() =" << QApplication::applicationDirPath();
-#endif
 
     return dir;
 }
