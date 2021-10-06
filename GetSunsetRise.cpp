@@ -38,6 +38,11 @@ GetSunsetRise::GetSunsetRise(QWidget *pwgt)
     connect(m_menuCities.get(), &QMenu::triggered, this , &GetSunsetRise::clickedCity);
 }
 
+void GetSunsetRise::contextMenuEvent(QContextMenuEvent *pe)
+{
+    m_menuCities->exec(pe->globalPos());
+}
+
 void GetSunsetRise::calc()
 {
     m_sunSetRise->setDay(calendarWidget->selectedDate().day());

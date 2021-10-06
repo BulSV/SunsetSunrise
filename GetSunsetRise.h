@@ -17,10 +17,7 @@ public:
     explicit GetSunsetRise(QWidget *pwgt = nullptr);
 
 protected:
-    virtual void contextMenuEvent(QContextMenuEvent *pe)
-    {
-        m_menuCities->exec(pe->globalPos());
-    }
+    virtual void contextMenuEvent(QContextMenuEvent *pe);
 
 private:
     void calc();
