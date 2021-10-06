@@ -77,19 +77,19 @@ void GetSunSetRise::clickedCity(QAction *pAction)
 
     QTextStream in(&file);
     QString script;
-    // долгота
+
     QScriptEngine longitudeEngine;
     QScriptValue longitude = longitudeEngine.newQObject(leLongtitude);
     longitudeEngine.globalObject().setProperty("longitude", longitude);
-    // широта
+
     QScriptEngine latitudeEngine;
     QScriptValue latitude = latitudeEngine.newQObject(leLatitude);
     latitudeEngine.globalObject().setProperty("latitude", latitude);
-    // восток
+
     QScriptEngine eastEngine;
     QScriptValue east = eastEngine.newQObject(rbEast);
     eastEngine.globalObject().setProperty("east", east);
-    // часовой пояс
+
     QScriptEngine timeZoneEngine;
     QScriptValue timeZone = timeZoneEngine.newQObject(cbTimeZone);
     timeZoneEngine.globalObject().setProperty("timeZone", timeZone);

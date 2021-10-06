@@ -22,7 +22,7 @@ double power(double num, int deg);
 void swapBytes(QByteArray &ba);
 QByteArray byteToWord(int value);
 int bin_dexTodex(int bin_dex);
-// преобразует word в byte
+// Convert word to byte
 int wordToInt(QByteArray ba);
 bool fuzzyIsNull(float value);
 bool fuzzyIsNull(double value);
@@ -32,14 +32,14 @@ float round(float value, int precision);
 double round(double value, int precision);
 float round(float value, float epsilon);
 double round(double value, float epsilon);
-// Преобразует hex вида 000000 в 00 00 00
+// Convert hex representation 000000 to 00 00 00
 QString toHumanHex(QByteArray ba);
-// Преобразует милисекунды в секунды
+// Convert milliseconds to seconds
 QString msToSec(int time);
-// 15,90 часов к виду 15,54 часов
+// Convert hours representation from 15,90 to 15,54
 float decaToSexta(float time);
 double decaToSexta(double time);
-// 15,54 часов к виду 15,90 часов
+// Convert hours representation from 15,54 to 15,90
 float sextaToDeca(float time);
 double sextaToDeca(double time);
 }

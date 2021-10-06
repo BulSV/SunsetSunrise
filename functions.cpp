@@ -76,8 +76,8 @@ QByteArray byteToWord(int value)
     }
     QByteArray ba;
     ba.resize(2);
-    ba[0] = static_cast<char>(value / 256); // старший байт
-    ba[1] = static_cast<char>(value % 256); // младший байт
+    ba[0] = static_cast<char>(value / 256); // high byte
+    ba[1] = static_cast<char>(value % 256); // low byte
 
     return ba;
 }
@@ -87,7 +87,7 @@ int bin_dexTodex(int bin_dex)
     return (((bin_dex & 0xF0) >> 4) * 10 + (bin_dex & 0x0F));
 }
 
-// преобразует word в byte
+// Convert word to byte
 int wordToInt(QByteArray ba)
 {
     if(ba.size() != 2) {
@@ -178,7 +178,7 @@ double round(double value, double epsilon)
     return static_cast<double>(static_cast<int>(value / epsilon + 0.5) * epsilon);
 }
 
-// Преобразует hex вида 000000aa в 00 00 00 AA
+// Convert hex representation 000000 to 00 00 00
 QString toHumanHex(QByteArray ba)
 {
     QString str;
@@ -195,7 +195,7 @@ QString toHumanHex(QByteArray ba)
     return str;
 }
 
-// Преобразует милисекунды в секунды
+// Convert milliseconds to seconds
 QString msToSec(int time)
 {
     int timeSec = time / 1000;
@@ -206,7 +206,7 @@ QString msToSec(int time)
             QString::number(timeMSec));
 }
 
-// 15,90 часов к виду 15,54 часов
+// Convert hours representation from 15,90 to 15,54
 float decaToSexta(float time)
 {
     float hours = static_cast<int>(time);
@@ -225,7 +225,7 @@ double decaToSexta(double time)
     return time;
 }
 
-// 15,54 часов к виду 15,90 часов
+// Convert hours representation from 15,54 to 15,90
 float sextaToDeca(float time)
 {
     float hours = static_cast<int>(time);
@@ -254,4 +254,4 @@ bool fuzzyIsNull(double value)
     return abs(value) <= 0.000000000001;
 }
 
-} // namespace BulSV_Lib
+} // namespace functions
