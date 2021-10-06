@@ -16,27 +16,6 @@ constexpr qreal ZENITH_ASTRONOMICAL = 108.0;
 
 using namespace functions;
 
-SunSetRise::SunSetRise(int day,
-                       int month,
-                       int year,
-                       qreal longtitude,
-                       qreal latitude,
-                       qreal zenith,
-                       int localOffset,
-                       bool isSet,
-                       bool isWest)
-    : m_day(day)
-    , m_month(month)
-    , m_year(year)
-    , m_longitude(longtitude)
-    , m_latitude(latitude)
-    , m_zenith(zenith)
-    , m_localOffset(localOffset)
-    , m_isSet(isSet)
-    , m_isWest(isWest)
-{
-}
-
 SunSetRise::SunSetRise()
     : m_day(0)
     , m_month(0)

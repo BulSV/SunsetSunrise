@@ -14,15 +14,6 @@ public:
         ASTRONOMICAL
     };
     SunSetRise();
-    SunSetRise(int day,
-               int month,
-               int year,
-               qreal longtitude,
-               qreal latitude,
-               qreal zenith,
-               int localOffset,
-               bool isSet,
-               bool isWest);
     void setDay(const int &day);
     void setMonth(const int &month);
     void setYear(const int &year);
