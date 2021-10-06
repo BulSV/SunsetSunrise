@@ -29,22 +29,22 @@ SunSetRise::SunSetRise()
 {
 }
 
-void SunSetRise::setDay(const int &day)
+void SunSetRise::setDay(int day)
 {
     m_day = day;
 }
 
-void SunSetRise::setMonth(const int &month)
+void SunSetRise::setMonth(int month)
 {
     m_month = month;
 }
 
-void SunSetRise::setYear(const int &year)
+void SunSetRise::setYear(int year)
 {
     m_year = year;
 }
 
-void SunSetRise::setZenith(const ZENITH &zenith)
+void SunSetRise::setZenith(ZENITH zenith)
 {
     switch(zenith)
     {
@@ -63,47 +63,47 @@ void SunSetRise::setZenith(const ZENITH &zenith)
     }
 }
 
-void SunSetRise::setLoclOffset(const double &timeOffset)
+void SunSetRise::setLoclOffset(double timeOffset)
 {
     m_localOffset = timeOffset;
 }
 
-void SunSetRise::setLongtitude(const double &longtitude)
+void SunSetRise::setLongtitude(double longtitude)
 {
     m_longitude = longtitude;
 }
 
-void SunSetRise::setLatitude(const double &latitude)
+void SunSetRise::setLatitude(double latitude)
 {
     m_latitude = latitude;
 }
 
-void SunSetRise::setSetOrRise(const bool &isSet)
+void SunSetRise::setSetOrRise(bool isSet)
 {
     m_isSet = isSet;
 }
 
-void SunSetRise::setEastOrWest(const bool &isWest)
+void SunSetRise::setEastOrWest(bool isWest)
 {
     m_isWest = isWest;
 }
 
-double SunSetRise::minutesToDegrees(const double &minutes) const
+double SunSetRise::minutesToDegrees(double minutes) const
 {
     return ((100.0 * minutes) / 60.0);
 }
 
-double SunSetRise::degreesToRadians(const double &degrees) const
+double SunSetRise::degreesToRadians(double degrees) const
 {
     return ((degrees * 4.0 * qAtan(1.0)) / 180.0);
 }
 
-double SunSetRise::radiansToDegrees(const double &radians) const
+double SunSetRise::radiansToDegrees(double radians) const
 {
     return ((radians * 180.0) / (4.0 * qAtan(1.0)));
 }
 
-double SunSetRise::toHumanTime(const double &time) const
+double SunSetRise::toHumanTime(double time) const
 {
     int hours;
     double minutes;
