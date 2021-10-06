@@ -14,7 +14,7 @@ class GetSunSetRise : public QWidget, public Ui::GetSunSetRise
     Q_OBJECT
 
 public:
-    GetSunSetRise(QWidget *pwgt = nullptr);
+    explicit GetSunSetRise(QWidget *pwgt = nullptr);
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *pe)
