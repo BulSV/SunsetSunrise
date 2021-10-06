@@ -12,7 +12,6 @@
 
 GetSunSetRise::GetSunSetRise(QWidget *pwgt)
     : QWidget(pwgt)
-    , m_sunSetRisen(new SunSetRise)
 {
     setupUi(this);
     QFile file(QString(":/timeZonesRC.txt"));
@@ -41,29 +40,29 @@ GetSunSetRise::GetSunSetRise(QWidget *pwgt)
         }
     }
 
-    m_menuCities = new QMenu(this);
+    m_menuCities = std::make_unique<QMenu>(this);
     addCities();
 
     connect(bCalc, &QPushButton::clicked, this, &GetSunSetRise::calc);
-    connect(m_menuCities, &QMenu::triggered, this , &GetSunSetRise::clickedCity);
+    connect(m_menuCities.get(), &QMenu::triggered, this , &GetSunSetRise::clickedCity);
 }
 
 void GetSunSetRise::calc()
 {
-    m_sunSetRisen->setDay(calendarWidget->selectedDate().day());
-    m_sunSetRisen->setMonth(calendarWidget->selectedDate().month());
-    m_sunSetRisen->setYear(calendarWidget->selectedDate().year());
-    m_sunSetRisen->setLongtitude(leLongtitude->text().toDouble());
-    m_sunSetRisen->setLatitude(leLatitude->text().toDouble());
-    m_sunSetRisen->setZenith(static_cast<SunSetRise::ZENITH>(cbSunZenith->currentIndex()));
-    m_sunSetRisen->setLoclOffset(zoneToTime(cbTimeZone->currentIndex()));
-    m_sunSetRisen->setSetOrRise(rbSunSet->isChecked());
-    m_sunSetRisen->setEastOrWest(rbWest->isChecked());
+    m_sunSetRise->setDay(calendarWidget->selectedDate().day());
+    m_sunSetRise->setMonth(calendarWidget->selectedDate().month());
+    m_sunSetRise->setYear(calendarWidget->selectedDate().year());
+    m_sunSetRise->setLongtitude(leLongtitude->text().toDouble());
+    m_sunSetRise->setLatitude(leLatitude->text().toDouble());
+    m_sunSetRise->setZenith(static_cast<SunSetRise::ZENITH>(cbSunZenith->currentIndex()));
+    m_sunSetRise->setLoclOffset(zoneToTime(cbTimeZone->currentIndex()));
+    m_sunSetRise->setSetOrRise(rbSunSet->isChecked());
+    m_sunSetRise->setEastOrWest(rbWest->isChecked());
 
     if(rbSunSet->isChecked()) {
-        lResults->setText(QString::fromUtf8("Закат в ") + toHumanTime(static_cast<double>(m_sunSetRisen->result())));
+        lResults->setText(QString::fromUtf8("Закат в ") + toHumanTime(static_cast<double>(m_sunSetRise->result())));
     } else {
-        lResults->setText(QString::fromUtf8("Восход в ") + toHumanTime(static_cast<double>(m_sunSetRisen->result())));
+        lResults->setText(QString::fromUtf8("Восход в ") + toHumanTime(static_cast<double>(m_sunSetRise->result())));
     }
 }
 
@@ -194,7 +193,7 @@ void GetSunSetRise::addCities()
     for(const auto& fileName : fileNames) {
         QString text = fileName;
         text.chop(3);
-        QAction *city = new QAction(text, m_menuCities);
+        QAction *city = new QAction(text, m_menuCities.get());
         city->setProperty("cityName", text);
         m_menuCities->addAction(city);
     }

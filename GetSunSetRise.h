@@ -1,3 +1,5 @@
+#include <memory>
+
 #include <QContextMenuEvent>
 #include <QDir>
 #include <QList>
@@ -30,7 +32,7 @@ private:
     void addCities();
 
 private:
-    SunSetRise *m_sunSetRisen;
-    QMenu *m_menuCities;
+    std::unique_ptr<SunSetRise> m_sunSetRise = std::make_unique<SunSetRise>();
+    std::unique_ptr<QMenu> m_menuCities;
     QList<double> m_timeZones;
 };
