@@ -16,7 +16,7 @@ GetSunsetRise::GetSunsetRise(QWidget *pwgt)
     setupUi(this);
     QFile file(QString(":/timeZonesRC.txt"));
     if(!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(nullptr, "ERROR", "Cannot open file " + file.fileName());
+        QMessageBox::critical(nullptr, tr("ERROR"), tr("Cannot open file ") + file.fileName());
     }
     QTextStream in(&file);
     while(!in.atEnd()) {
@@ -27,7 +27,7 @@ GetSunsetRise::GetSunsetRise(QWidget *pwgt)
     QDir dir;
     if(!QDir("scripts").exists()) {
         if(!dir.mkdir("scripts")) {
-            QMessageBox::critical(nullptr, "ERROR", "Cannot create directory \"scripts\"");
+            QMessageBox::critical(nullptr, tr("ERROR"), tr("Cannot create directory \"scripts\""));
         }
     }
 
@@ -56,9 +56,9 @@ void GetSunsetRise::calc()
     m_sunSetRise->setEastOrWest(rbWest->isChecked());
 
     if(rbSunSet->isChecked()) {
-        lResults->setText(QString::fromUtf8("Закат в ") + toHumanTime(static_cast<double>(m_sunSetRise->getConfiguredTime())));
+        lResults->setText(tr("Sunset at ") + toHumanTime(static_cast<double>(m_sunSetRise->getConfiguredTime())));
     } else {
-        lResults->setText(QString::fromUtf8("Восход в ") + toHumanTime(static_cast<double>(m_sunSetRise->getConfiguredTime())));
+        lResults->setText(tr("Sunrise at ") + toHumanTime(static_cast<double>(m_sunSetRise->getConfiguredTime())));
     }
 }
 
@@ -66,7 +66,7 @@ void GetSunsetRise::clickedCity(QAction *pAction)
 {
     QFile file(QString("scripts/") + QString(pAction->property("cityName").toString()) + QString(".js"));
     if(!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(nullptr, "ERROR", "Cannot open file " + file.fileName());
+        QMessageBox::critical(nullptr, tr("ERROR"), tr("Cannot open file ") + file.fileName());
 
         return;
     }
@@ -108,7 +108,7 @@ void GetSunsetRise::clickedCity(QAction *pAction)
 qreal GetSunsetRise::zoneToTime(const int &index)
 {
     if(m_timeZones.size() < index + 1) {
-        QMessageBox::critical(nullptr, "ERROR", "The time zone was selected an incorrect way!");
+        QMessageBox::critical(nullptr, tr("ERROR"), tr("The time zone was selected an incorrect way!"));
 
         return 0.0;
     }
