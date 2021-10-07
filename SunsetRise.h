@@ -1,6 +1,8 @@
 #ifndef SUNSETRISE_H
 #define SUNSETRISE_H
 
+#include <QDate>
+
 class SunsetRise
 {
 public:
@@ -11,9 +13,7 @@ public:
         ASTRONOMICAL
     };
     SunsetRise();
-    void setDay(int day);
-    void setMonth(int month);
-    void setYear(int year);
+    void setDate(const QDate& date);
     void setLongtitude(double longtitude);
     void setLatitude(double latitude);
     void setZenith(ZENITH zenith);
@@ -26,7 +26,6 @@ private:
     double minutesToDegrees(double minutes) const;
     double toHumanTime(double time) const;
 
-    int whatDay() const;
     double longtitudeToHour() const;
     double sunsMeanAnomaly() const;
     double sunsTrueLongtitude() const;
@@ -37,9 +36,7 @@ private:
     double utToLocalTimeZone() const;
 
 private:
-    int m_day;
-    int m_month;
-    int m_year;
+    QDate m_date;
     double m_longitude;
     double m_latitude;
     double m_zenith;

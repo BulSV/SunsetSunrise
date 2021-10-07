@@ -698,7 +698,7 @@
       <enum>QFrame::Sunken</enum>
      </property>
      <property name="text">
-      <string>Result:</string>
+      <string>None</string>
      </property>
     </widget>
    </item>

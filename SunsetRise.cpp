@@ -18,10 +18,7 @@ constexpr double ZENITH_ASTRONOMICAL = 108.0;
 using namespace functions;
 
 SunsetRise::SunsetRise()
-    : m_day(0)
-    , m_month(0)
-    , m_year(0)
-    , m_longitude(0.0)
+    : m_longitude(0.0)
     , m_latitude(0.0)
     , m_zenith(0.0)
     , m_localOffset(0.0)
@@ -30,19 +27,9 @@ SunsetRise::SunsetRise()
 {
 }
 
-void SunsetRise::setDay(int day)
+void SunsetRise::setDate(const QDate &date)
 {
-    m_day = day;
-}
-
-void SunsetRise::setMonth(int month)
-{
-    m_month = month;
-}
-
-void SunsetRise::setYear(int year)
-{
-    m_year = year;
+    m_date = date;
 }
 
 void SunsetRise::setZenith(ZENITH zenith)
@@ -103,25 +90,14 @@ double SunsetRise::toHumanTime(double time) const
             static_cast<double>(round(static_cast<double>(minutes), 2));
 }
 
-//1. first calculate the day of the year
-int SunsetRise::whatDay() const
-{
-    auto N1 = qFloor(275.0 * m_month / 9.0);
-    auto N2 = qFloor((m_month + 9.0) / 12.0);
-    auto N3 = (1 + qFloor((m_year - 4.0 * qFloor(m_year / 4.0) + 2.0) / 3.0));
-    auto N = N1 - (N2 * N3) + m_day - 30;
-
-    return N;
-}
-
 //2. convert the longitude to hour value and calculate an approximate time
 double SunsetRise::longtitudeToHour() const
 {
     auto lngHour = m_longitude / 15.0;
     if(m_isSet) {
-        return whatDay() + ((18.0 - lngHour) / 24.0);
+        return m_date.dayOfYear() + ((18.0 - lngHour) / 24.0);
     }
-    return whatDay() + ((6.0 - lngHour) / 24.0);
+    return m_date.dayOfYear() + ((6.0 - lngHour) / 24.0);
 }
 
 //3. calculate the Sun's mean anomaly

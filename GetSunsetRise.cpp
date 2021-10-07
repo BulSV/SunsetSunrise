@@ -47,9 +47,7 @@ void GetSunsetRise::contextMenuEvent(QContextMenuEvent *pe)
 
 void GetSunsetRise::calc()
 {
-    m_sunSetRise->setDay(calendarWidget->selectedDate().day());
-    m_sunSetRise->setMonth(calendarWidget->selectedDate().month());
-    m_sunSetRise->setYear(calendarWidget->selectedDate().year());
+    m_sunSetRise->setDate(calendarWidget->selectedDate());
     m_sunSetRise->setLongtitude(leLongtitude->text().toDouble());
     m_sunSetRise->setLatitude(leLatitude->text().toDouble());
     m_sunSetRise->setZenith(static_cast<SunsetRise::ZENITH>(cbSunZenith->currentIndex()));
@@ -58,11 +56,11 @@ void GetSunsetRise::calc()
     m_sunSetRise->setEastOrWest(rbWest->isChecked());
 
     if(rbSunSet->isChecked()) {
-        lResults->setText(tr("Result: sunset at ") +
-                          toHumanTime(m_sunSetRise->getConfiguredTime()));
+        lResults->setText(
+                    tr("Sunset at ") + toHumanTime(m_sunSetRise->getConfiguredTime()));
     } else {
-        lResults->setText(tr("Result: sunrise at ") +
-                          toHumanTime(m_sunSetRise->getConfiguredTime()));
+        lResults->setText(
+                    tr("Sunrise at ") + toHumanTime(m_sunSetRise->getConfiguredTime()));
     }
 }
 
