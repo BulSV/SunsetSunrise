@@ -58,11 +58,11 @@ void GetSunsetRise::calc()
     m_sunSetRise->setEastOrWest(rbWest->isChecked());
 
     if(rbSunSet->isChecked()) {
-        lResults->setText(
-                    tr("Sunset at ") + toHumanTime(m_sunSetRise->getConfiguredTime()));
+        lResults->setText(tr("Result: sunset at ") +
+                          toHumanTime(m_sunSetRise->getConfiguredTime()));
     } else {
-        lResults->setText(
-                    tr("Sunrise at ") + toHumanTime(m_sunSetRise->getConfiguredTime()));
+        lResults->setText(tr("Result: sunrise at ") +
+                          toHumanTime(m_sunSetRise->getConfiguredTime()));
     }
 }
 

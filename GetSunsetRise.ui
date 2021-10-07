@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>284</width>
-    <height>406</height>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Восход и заход солнца</string>
+   <string>Sunset Sunrise</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
@@ -21,6 +21,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="locale">
+      <locale language="English" country="UnitedStates"/>
      </property>
     </widget>
    </item>
@@ -34,14 +37,14 @@
    <item row="2" column="0" rowspan="2">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Долгота</string>
+      <string>Longitude</string>
      </property>
     </widget>
    </item>
    <item row="3" column="1">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Широта</string>
+      <string>Latitude</string>
      </property>
     </widget>
    </item>
@@ -72,7 +75,7 @@
      </property>
      <widget class="QRadioButton" name="rbEast">
       <property name="text">
-       <string>Восток</string>
+       <string>East</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -80,7 +83,7 @@
      </widget>
      <widget class="QRadioButton" name="rbWest">
       <property name="text">
-       <string>Запад</string>
+       <string>West</string>
       </property>
      </widget>
     </widget>
@@ -92,7 +95,7 @@
      </property>
      <widget class="QRadioButton" name="rbSunSet">
       <property name="text">
-       <string>Закат</string>
+       <string>Sunset</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -100,7 +103,7 @@
      </widget>
      <widget class="QRadioButton" name="rbSunRise">
       <property name="text">
-       <string>Восход</string>
+       <string>Sunrise</string>
       </property>
      </widget>
     </widget>
@@ -108,14 +111,14 @@
    <item row="6" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>Зенит солнца</string>
+      <string>Zenith of the sun</string>
      </property>
     </widget>
    </item>
    <item row="8" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Часовой пояс</string>
+      <string>Timezone</string>
      </property>
     </widget>
    </item>
@@ -647,22 +650,22 @@
      </property>
      <item>
       <property name="text">
-       <string>ОФИЦИАЛЬНЫЙ</string>
+       <string>OFFICIAL</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>ГРАЖДАНСКИЙ</string>
+       <string>CIVILIAN</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>НАВИГАЦИОННЫЙ</string>
+       <string>NAVIGATIONAL</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>АСТРОНОМИЧЕСКИЙ</string>
+       <string>ASTRONOMICAL</string>
       </property>
      </item>
     </widget>
@@ -676,7 +679,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Расчёт</string>
+      <string>Calculate</string>
      </property>
     </widget>
    </item>
@@ -695,7 +698,7 @@
       <enum>QFrame::Sunken</enum>
      </property>
      <property name="text">
-      <string>Ответ:</string>
+      <string>Result:</string>
      </property>
     </widget>
    </item>
