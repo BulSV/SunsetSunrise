@@ -22,7 +22,16 @@ GetSunsetRise::GetSunsetRise(QWidget* pwgt)
 
     QTextStream in(&file);
     while(!in.atEnd()) {
-        m_timeZones << in.readLine().toDouble();
+        const auto& line = in.readLine();
+        const auto& parts = line.split(" ", QString::SkipEmptyParts);
+        if(parts.size() != 3) {
+            continue;
+        }
+        bool ok{};
+        if(const auto& value = parts.at(2).toDouble(&ok); ok) {
+            m_timeZones << value;
+            cbTimeZone->addItem(line);
+        }
     }
     file.close();
 
