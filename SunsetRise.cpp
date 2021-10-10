@@ -18,60 +18,27 @@ SunsetRise::SunsetRise()
 {
 }
 
-void SunsetRise::setData(const SunsetRise::Data& data)
+void SunsetRise::setData(const Data& data)
 {
     m_data = data;
-}
-
-void SunsetRise::setDate(const QDate &date)
-{
-    m_date = date;
-}
-
-void SunsetRise::setZenith(ZenithType zenith)
-{
-    switch(zenith)
-    {
-    case ZenithType::Official:
-        m_zenith = ZENITH_OFFICIAL;
-        break;
-    case ZenithType::Civilian:
-        m_zenith = ZENITH_CIVILIAN;
-        break;
-    case ZenithType::Nautical:
-        m_zenith = ZENITH_NAUTICAL;
-        break;
-    case ZenithType::Astronomical:
-        m_zenith = ZENITH_ASTRONOMICAL;
-        break;
+    if(m_data.coordinates.meridian == Data::Meridian::West) {
+        m_data.coordinates.longitude.value() *= -1.0;
     }
 }
 
-void SunsetRise::setLoclOffset(const std::optional<double> &timeOffset)
+std::optional<double> SunsetRise::getZenith(const std::optional<Data::ZenithType>& zenith) const
 {
-    m_localOffset = timeOffset;
-}
-
-void SunsetRise::setLongtitude(double longtitude)
-{
-    m_longitude = longtitude;
-}
-
-void SunsetRise::setLatitude(double latitude)
-{
-    m_latitude = latitude;
-}
-
-void SunsetRise::setCalculationType(CalculationType type)
-{
-    m_calculationType = type;
-}
-
-void SunsetRise::setMeridian(Meridian meridian)
-{
-    m_meridian = meridian;
-    if(m_meridian == Meridian::West) {
-        m_longitude.value() *= -1.0;
+    switch(zenith.value()) {
+    case Data::ZenithType::Official:
+        return ZENITH_OFFICIAL;
+    case Data::ZenithType::Civilian:
+        return ZENITH_CIVILIAN;
+    case Data::ZenithType::Nautical:
+        return ZENITH_NAUTICAL;
+    case Data::ZenithType::Astronomical:
+        return ZENITH_ASTRONOMICAL;
+    default:
+        return std::nullopt;
     }
 }
 
@@ -92,11 +59,11 @@ double SunsetRise::toHumanTime(double time) const
 //2. convert the longitude to hour value and calculate an approximate time
 double SunsetRise::longtitudeToHour() const
 {
-    auto lngHour = m_longitude.value() / 15.0;
-    if(*m_calculationType == CalculationType::Sunset) {
-        return m_date.dayOfYear() + (18.0 - lngHour) / 24.0;
+    auto lngHour = m_data.coordinates.longitude.value() / 15.0;
+    if(*m_data.calculationType == Data::CalculationType::Sunset) {
+        return m_data.date.dayOfYear() + (18.0 - lngHour) / 24.0;
     }
-    return m_date.dayOfYear() + (6.0 - lngHour) / 24.0;
+    return m_data.date.dayOfYear() + (6.0 - lngHour) / 24.0;
 }
 
 //3. calculate the Sun's mean anomaly
@@ -143,14 +110,18 @@ double SunsetRise::sunsRightAscension() const
 }
 
 //6. calculate the Sun's declination
-double SunsetRise::sunsDeclination() const
+std::optional<double> SunsetRise::sunsDeclination() const
 {
     auto sinDec = 0.39782 * qSin(qDegreesToRadians(sunsTrueLongtitude()));
     auto cosDec = qCos(qAsin(sinDec));
     //7a. calculate the Sun's local hour angle
-    auto cosH = (qCos(qDegreesToRadians(m_zenith.value())) -
-                 sinDec * qSin(qDegreesToRadians(m_latitude.value()))) /
-            (cosDec * qCos(qDegreesToRadians(m_latitude.value())));
+    const auto& zenith = getZenith(m_data.zenith);
+    if(!zenith.has_value()) {
+        return std::nullopt;
+    }
+    auto cosH = (qCos(qDegreesToRadians(*zenith)) -
+                 sinDec * qSin(qDegreesToRadians(m_data.coordinates.latitude.value()))) /
+            (cosDec * qCos(qDegreesToRadians(m_data.coordinates.latitude.value())));
     if (cosH >  1.0) {
         //the sun never rises on this location (on the specified date)
         return std::numeric_limits<double>::min();
@@ -160,34 +131,32 @@ double SunsetRise::sunsDeclination() const
         return std::numeric_limits<double>::max();
     }
     //7b. finish calculating H and convert into hours
-    if(*m_calculationType == CalculationType::Sunset) {
+    if(*m_data.calculationType == Data::CalculationType::Sunset) {
         return qRadiansToDegrees(qAcos(cosH)) / 15.0;
     }
     return (360.0 - qRadiansToDegrees(qAcos(cosH))) / 15.0;
 }
 
 //8. calculate local mean time of rising/setting
-double SunsetRise::localMeanTime() const
+std::optional<double> SunsetRise::localMeanTime() const
 {
     if(const auto& declination = sunsDeclination();
-            declination == std::numeric_limits<double>::min() ||
-            declination == std::numeric_limits<double>::max()) {
-        return declination;
+            declination != std::numeric_limits<double>::min() &&
+            declination != std::numeric_limits<double>::max()) {
+        return *declination + sunsRightAscension() - 0.06571 * longtitudeToHour() - 6.622;
     } else {
-        return declination + sunsRightAscension() - 0.06571 * longtitudeToHour() - 6.622;
+        return declination;
     }
 }
 
 //9. adjust back to UTC
-double SunsetRise::toUTC() const
+std::optional<double> SunsetRise::toUTC() const
 {
     if(const auto& meanTime = localMeanTime();
-            meanTime == std::numeric_limits<double>::min() ||
-            meanTime == std::numeric_limits<double>::max()) {
-        return meanTime;
-    } else {
-        auto lngHour = m_longitude.value() / 15.0;
-        auto UT = meanTime - lngHour;
+            meanTime != std::numeric_limits<double>::min() &&
+            meanTime != std::numeric_limits<double>::max()) {
+        auto lngHour = m_data.coordinates.longitude.value() / 15.0;
+        auto UT = *meanTime - lngHour;
 
         if(UT > 24.0 || qFuzzyCompare(UT, 24.0)) {
             UT -= 24.0;
@@ -197,32 +166,27 @@ double SunsetRise::toUTC() const
         }
 
         return UT;
+    } else {
+        return meanTime;
     }
 }
 
 //10. convert UT value to local time zone of latitude/longitude
-double SunsetRise::utToLocalTimeZone() const
+std::optional<double> SunsetRise::utToLocalTimeZone() const
 {
-    if(const auto& utc = toUTC(); utc == std::numeric_limits<double>::min() ||
-            utc == std::numeric_limits<double>::max()) {
-        return utc;
-    } else {
-        auto localT = round(utc + sextaToDeca(m_localOffset.value()), 2);
+    if(const auto& utc = toUTC(); utc != std::numeric_limits<double>::min() &&
+            utc != std::numeric_limits<double>::max()) {
+        auto localT = round(*utc + sextaToDeca(m_data.localOffset.value()), 2);
 
         return toHumanTime(localT);
+    } else {
+        return utc;
     }
-}
-
-bool SunsetRise::isInit() const
-{
-    return m_date.isValid() && m_longitude.has_value() && m_latitude.has_value() &&
-            m_zenith.has_value() && m_localOffset.has_value() &&
-            m_calculationType.has_value() && m_meridian.has_value();
 }
 
 std::optional<double> SunsetRise::calculateConfiguredTime() const
 {
-    if(!isInit()) {
+    if(!m_data.isInit()) {
         return std::nullopt;
     }
 

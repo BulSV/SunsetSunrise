@@ -26,11 +26,13 @@ unix:DESTDIR = ../release/unix
 }
 
 SOURCES += main.cpp \
+    Data.cpp \
     GetSunsetRise.cpp \
     SunsetRise.cpp \
     functions.cpp
 
 HEADERS += \
+    Data.h \
     GetSunsetRise.h \
     SunsetRise.h \
     functions.h

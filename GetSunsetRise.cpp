@@ -61,24 +61,25 @@ void GetSunsetRise::contextMenuEvent(QContextMenuEvent* e)
 
 void GetSunsetRise::calculate()
 {
-    m_sunSetRise->setDate(calendarWidget->selectedDate());
+    Data data;
+    data.date = calendarWidget->selectedDate();
     bool ok{};
     if(const auto& value = leLongtitude->text().toDouble(&ok); ok) {
-        m_sunSetRise->setLongtitude(value);
+        data.coordinates.longitude = value;
     }
     if(const auto& value = leLatitude->text().toDouble(&ok); ok) {
-        m_sunSetRise->setLatitude(value);
+       data.coordinates.latitude = value;
     }
-    m_sunSetRise->setZenith(
-                static_cast<SunsetRise::ZenithType>(cbSunZenith->currentIndex()));
-    m_sunSetRise->setLoclOffset(zoneToTime(cbTimeZone->currentIndex()));
-    m_sunSetRise->setCalculationType(rbSunSet->isChecked()
-                                     ? SunsetRise::CalculationType::Sunset
-                                     : SunsetRise::CalculationType::Sunrise);
-    m_sunSetRise->setMeridian(rbWest->isChecked()
-                              ? SunsetRise::Meridian::West
-                              : SunsetRise::Meridian::East);
+    data.zenith =  static_cast<Data::ZenithType>(cbSunZenith->currentIndex());
+    data.localOffset = zoneToTime(cbTimeZone->currentIndex());
+    data.calculationType = rbSunSet->isChecked()
+            ? Data::CalculationType::Sunset
+            : Data::CalculationType::Sunrise;
+    data.coordinates.meridian = rbWest->isChecked()
+            ? Data::Meridian::West
+            : Data::Meridian::East;
 
+    m_sunSetRise->setData(data);
     showResult(m_sunSetRise->calculateConfiguredTime());
 }
 
