@@ -15,7 +15,7 @@ GetSunsetRise::GetSunsetRise(QWidget* pwgt)
 
     QFile file(QString(":/timeZonesRC.txt"));
     if(!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(nullptr,
+        QMessageBox::critical(this,
                               tr("Load time zones"),
                               tr("Cannot open file ") + file.fileName());
     }
@@ -29,7 +29,7 @@ GetSunsetRise::GetSunsetRise(QWidget* pwgt)
     QDir dir;
     if(!QDir("scripts").exists()) {
         if(!dir.mkdir("scripts")) {
-            QMessageBox::critical(nullptr,
+            QMessageBox::critical(this,
                                   tr("Create directory \"scripts\""),
                                   tr("Cannot create directory \"scripts\""));
         }

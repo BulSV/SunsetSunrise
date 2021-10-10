@@ -1,6 +1,6 @@
 #include "Data.h"
 
-bool Data::isInit() const {
+bool Data::isValid() const {
     return date.isValid()
             && coordinates.longitude.has_value()
             && coordinates.latitude.has_value()

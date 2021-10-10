@@ -186,7 +186,7 @@ std::optional<double> SunsetRise::utToLocalTimeZone() const
 
 std::optional<double> SunsetRise::calculateConfiguredTime() const
 {
-    if(!m_data.isInit()) {
+    if(!m_data.isValid()) {
         return std::nullopt;
     }
 

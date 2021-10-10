@@ -27,7 +27,7 @@ public:
         std::optional<double> latitude;
         std::optional<Meridian> meridian;
     };
-    bool isInit() const;
+    bool isValid() const;
 
 public:
     QDate date;
