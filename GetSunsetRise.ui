@@ -75,15 +75,21 @@
      </property>
      <widget class="QRadioButton" name="rbEast">
       <property name="text">
-       <string>East</string>
+       <string>East meridian</string>
       </property>
       <property name="checked">
        <bool>true</bool>
       </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
      </widget>
      <widget class="QRadioButton" name="rbWest">
       <property name="text">
-       <string>West</string>
+       <string>West meridian</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
       </property>
      </widget>
     </widget>

@@ -1,6 +1,7 @@
 TEMPLATE += app
 QT += widgets script
 CONFIG += C++17
+QMAKE_CXXFLAGS += -std=c++1z
 
 CONFIG(debug, debug|release) {
     unix:DESTDIR = ../debug/unix

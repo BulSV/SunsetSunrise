@@ -8,16 +8,18 @@
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptValue>
 
-GetSunsetRise::GetSunsetRise(QWidget *pwgt)
+GetSunsetRise::GetSunsetRise(QWidget* pwgt)
     : QWidget(pwgt)
 {
     setupUi(this);
+
     QFile file(QString(":/timeZonesRC.txt"));
     if(!file.open(QIODevice::ReadOnly)) {
         QMessageBox::critical(nullptr,
-                              tr("ERROR"),
+                              tr("Load time zones"),
                               tr("Cannot open file ") + file.fileName());
     }
+
     QTextStream in(&file);
     while(!in.atEnd()) {
         m_timeZones << in.readLine().toDouble();
@@ -28,54 +30,103 @@ GetSunsetRise::GetSunsetRise(QWidget *pwgt)
     if(!QDir("scripts").exists()) {
         if(!dir.mkdir("scripts")) {
             QMessageBox::critical(nullptr,
-                                  tr("ERROR"),
+                                  tr("Create directory \"scripts\""),
                                   tr("Cannot create directory \"scripts\""));
         }
     }
 
     m_menuCities = std::make_unique<QMenu>(this);
-    addCities();
+    loadCities();
 
-    connect(bCalc, &QPushButton::clicked, this, &GetSunsetRise::calc);
-    connect(m_menuCities.get(), &QMenu::triggered, this , &GetSunsetRise::clickedCity);
+    connect(bCalc, &QPushButton::clicked, this, &GetSunsetRise::calculate);
+    connect(m_menuCities.get(), &QMenu::triggered,
+            this, &GetSunsetRise::loadSelectedCityCoordinates);
+    connect(rbWest, &QRadioButton::clicked, [=](bool checked) {
+        rbEast->setChecked(!checked); });
+    connect(rbEast, &QRadioButton::toggled, [=](bool checked) {
+        rbWest->setChecked(!checked); });
+
+    connect(leLatitude, &QLineEdit::textChanged, this, &GetSunsetRise::clearDataOutput);
+    connect(leLongtitude, &QLineEdit::textChanged, this, &GetSunsetRise::clearDataOutput);
+    connect(rbEast, &QRadioButton::clicked, this, &GetSunsetRise::clearDataOutput);
+    connect(rbWest, &QRadioButton::clicked, this, &GetSunsetRise::clearDataOutput);
+    connect(cbTimeZone, &QComboBox::currentTextChanged,
+            this, &GetSunsetRise::clearDataOutput);
 }
 
-void GetSunsetRise::contextMenuEvent(QContextMenuEvent *pe)
+void GetSunsetRise::contextMenuEvent(QContextMenuEvent* e)
 {
-    m_menuCities->exec(pe->globalPos());
+    m_menuCities->exec(e->globalPos());
 }
 
-void GetSunsetRise::calc()
+void GetSunsetRise::calculate()
 {
     m_sunSetRise->setDate(calendarWidget->selectedDate());
-    m_sunSetRise->setLongtitude(leLongtitude->text().toDouble());
-    m_sunSetRise->setLatitude(leLatitude->text().toDouble());
-    m_sunSetRise->setZenith(static_cast<SunsetRise::ZENITH>(cbSunZenith->currentIndex()));
+    bool ok{};
+    if(const auto& value = leLongtitude->text().toDouble(&ok); ok) {
+        m_sunSetRise->setLongtitude(value);
+    }
+    if(const auto& value = leLatitude->text().toDouble(&ok); ok) {
+        m_sunSetRise->setLatitude(value);
+    }
+    m_sunSetRise->setZenith(
+                static_cast<SunsetRise::ZenithType>(cbSunZenith->currentIndex()));
     m_sunSetRise->setLoclOffset(zoneToTime(cbTimeZone->currentIndex()));
-    m_sunSetRise->setSetOrRise(rbSunSet->isChecked());
-    m_sunSetRise->setEastOrWest(rbWest->isChecked());
+    m_sunSetRise->setCalculationType(rbSunSet->isChecked()
+                                     ? SunsetRise::CalculationType::Sunset
+                                     : SunsetRise::CalculationType::Sunrise);
+    m_sunSetRise->setMeridian(rbWest->isChecked()
+                              ? SunsetRise::Meridian::West
+                              : SunsetRise::Meridian::East);
 
-    if(rbSunSet->isChecked()) {
-        lResults->setText(
-                    tr("Sunset at ") + toHumanTime(m_sunSetRise->getConfiguredTime()));
+    showResult(m_sunSetRise->calculateConfiguredTime());
+}
+
+void GetSunsetRise::showResult(const std::optional<double>& result)
+{
+    if(result) {
+        if(*result == std::numeric_limits<double>::min()) {
+            QMessageBox::information(
+                        this,
+                        "Results",
+                        "The sun never rises on this location\n(on the specified date)");
+            return;
+        } else if(*result == std::numeric_limits<double>::max()) {
+            QMessageBox::information(
+                        this,
+                        "Results",
+                        "The sun never sets on this location\n(on the specified date)");
+            return;
+        } else {
+            lResults->setText(tr("%1%2 at %3")
+                              .arg(rbSunSet->isChecked() ? tr("Sunset") : tr("Sunrise"))
+                              .arg(m_currentCityName.isEmpty()
+                                   ? ""
+                                   : tr(" in ") + m_currentCityName)
+                              .arg(toHumanTime(*result)));
+        }
     } else {
-        lResults->setText(
-                    tr("Sunrise at ") + toHumanTime(m_sunSetRise->getConfiguredTime()));
+        QMessageBox::information(
+                    this,
+                    "Results",
+                    "No input data specified");
+        return;
     }
 }
 
-void GetSunsetRise::clickedCity(QAction *pAction)
+void GetSunsetRise::loadSelectedCityCoordinates(QAction* action)
 {
     QFile file(QString("scripts/") +
-               QString(pAction->property("cityName").toString()) +
+               QString(action->property("cityName").toString()) +
                QString(".js"));
     if(!file.open(QIODevice::ReadOnly)) {
         QMessageBox::critical(nullptr,
-                              tr("ERROR"),
+                              tr("Load coordinates from script"),
                               tr("Cannot open file ") + file.fileName());
 
         return;
     }
+    clearDataInput();
 
     QTextStream in(&file);
     QString script;
@@ -96,86 +147,65 @@ void GetSunsetRise::clickedCity(QAction *pAction)
     QScriptValue timeZone = timeZoneEngine.newQObject(cbTimeZone);
     timeZoneEngine.globalObject().setProperty("timeZone", timeZone);
 
-    while(!in.atEnd()) {
-        script = in.readLine();
-        longitudeEngine.evaluate(script);
-        script = in.readLine();
-        latitudeEngine.evaluate(script);
-        script = in.readLine();
-        eastEngine.evaluate(script);
-        script = in.readLine();
-        timeZoneEngine.evaluate(script);
+    script = in.readLine();
+    int errorsCount = longitudeEngine.evaluate(script).isError() ? 1 : 0;
+    script = in.readLine();
+    errorsCount += latitudeEngine.evaluate(script).isError() ? 1 : 0;
+    script = in.readLine();
+    errorsCount += eastEngine.evaluate(script).isError() ? 1 : 0;
+    script = in.readLine();
+    errorsCount += timeZoneEngine.evaluate(script).isError() ? 1 : 0;
+
+    if(errorsCount != 0) {
+        clearDataInput();
+        QMessageBox::warning(this,
+                             tr("Load coordinates from script"),
+                             tr("Script coordinates are not valid!"));
+        return;
     }
 
     file.close();
+
+    m_currentCityName = action->property("cityName").toString();
 }
 
-
-qreal GetSunsetRise::zoneToTime(const int &index)
+void GetSunsetRise::clearDataInput()
 {
-    if(m_timeZones.size() < index + 1) {
-        QMessageBox::critical(nullptr,
-                              tr("ERROR"),
-                              tr("The time zone was selected an incorrect way!"));
+    leLatitude->clear();
+    leLongtitude->clear();
+    rbEast->setChecked(true);
+    rbSunSet->setChecked(true);
+    cbSunZenith->setCurrentIndex(0);
+    cbTimeZone->setCurrentIndex(0);
+    lResults->setText(tr("None"));
+    m_currentCityName.clear();
+}
 
-        return 0.0;
+void GetSunsetRise::clearDataOutput()
+{
+    m_currentCityName.clear();
+    lResults->setText(tr("None"));
+}
+
+std::optional<double> GetSunsetRise::zoneToTime(int index) const
+{
+    if(index < 0 || index >= m_timeZones.size()) {
+        QMessageBox::warning(nullptr,
+                             tr("Calculate"),
+                             tr("The time zone was selected an incorrect way!"));
+
+        return std::nullopt;
     }
 
     return m_timeZones.at(index);
 }
 
-QString GetSunsetRise::toHumanTime(double preResult)
+QString GetSunsetRise::toHumanTime(double preResult) const
 {
-    QString hours = QString::number(static_cast<int>(preResult));
-    QString minutes =
-            QString::number(preResult - static_cast<double>(static_cast<int>(preResult)),
-                            'f',
-                            2);
-
-    switch (hours.size()) {
-    case 0:
-        hours.push_front('0');
-        hours.push_front('0');
-        break;
-    case 1:
-        hours.push_front('0');
-        break;
-    default:
-        break;
-    }
-    // maximum size of minutes if 5: "-0.xx". It is always less than one in absolute value
-    switch (minutes.size()) {
-    case 0: // ""
-        minutes.push_back('0');
-        minutes.push_back('0');
-        break;
-    case 1: // "0"
-        minutes.push_back('0');
-        break;
-    case 3: // "0.x"
-        minutes.remove(0, 2); // remove "0."
-        minutes.push_back('0');
-        break;
-    case 4:
-        if(minutes.indexOf("-") != -1) { // "-0.x"
-            minutes.remove(0, 3);
-            minutes.push_back('0');
-        } else { // "0.xx"
-            minutes.remove(0, 2);
-        }
-        break;
-    case 5:
-        minutes.remove(0, 3); // remove "-0."
-        break;
-    default: // "0."
-        minutes.remove(0, 2);
-        break;
-    }
-
-    return QString(hours + ':' + minutes);
+    return QString("%1").arg(preResult, 5, 'f', 2, QChar('0')).replace(".", ":");
 }
 
-QDir GetSunsetRise::directoryOf(const QString &subdir)
+std::optional<QDir> GetSunsetRise::directoryOf(const QString& subdir) const
 {
     QDir dir(QApplication::applicationDirPath());
     dir.cd(subdir);
@@ -183,16 +213,17 @@ QDir GetSunsetRise::directoryOf(const QString &subdir)
     return dir;
 }
 
-void GetSunsetRise::addCities()
+void GetSunsetRise::loadCities()
 {
-    QDir scriptsDir = directoryOf("scripts");
-    QStringList fileNames = scriptsDir.entryList(QStringList("*.js"), QDir::Files);
+    if(const auto& scriptsDir = directoryOf("scripts")) {
+        QStringList fileNames = scriptsDir->entryList(QStringList("*.js"), QDir::Files);
 
-    for(const auto& fileName : fileNames) {
-        QString text = fileName;
-        text.chop(3);
-        QAction *city = new QAction(text, m_menuCities.get());
-        city->setProperty("cityName", text);
-        m_menuCities->addAction(city);
+        for(const auto& fileName : fileNames) {
+            QString text = fileName;
+            text.chop(3);
+            QAction *city = new QAction(text, m_menuCities.get());
+            city->setProperty("cityName", text);
+            m_menuCities->addAction(city);
+        }
     }
 }
