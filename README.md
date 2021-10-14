@@ -1,8 +1,8 @@
 # GetSunsetSunrise
 
-## Using QtScript
+![GUI](GUI.png)
 
-### Sample script
+## Sample script
 
 #### For Kiev.js:
 ```javascript
