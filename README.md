@@ -1,6 +1,7 @@
 # Sunset Sunrise
-![GUI](GUI.png)<br />
-The application has custom scripts feature for adding predefined geographic coordinates, which are called by the right mouse button on the application window. The custom scripts must be copied to the `scripts` folder, which is located in the application home folder.
+The application calculates and displays the time of sunrise and sunset at the specified geographic coordinates.<br /><br />
+![GUI](GUI.png)<br /><br />
+It has custom scripts feature for adding predefined geographic coordinates, which are called by the right mouse button on the application window. The custom scripts must be copied to the `scripts` folder, which is located in the application home folder.
 ### Examples of predefined scripts
 #### For Kiev.js:
 ```javascript
